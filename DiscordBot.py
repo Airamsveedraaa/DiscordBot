@@ -37,7 +37,7 @@ async def websocket_handler(request):
          if msg.data=="get_status":
             await ws.send_str('{"status": "active"}')
 #Configuracion del bot con Slash Commands
-bot =commands.Bot(commands_prefix="!",intents=discord.Intents.default())
+bot =commands.Bot(command_prefix="!",intents=discord.Intents.default())
 
 @bot.slash_command(name="exp",description="Muestra tu nivel y EXP")
 async def exp(ctx):
