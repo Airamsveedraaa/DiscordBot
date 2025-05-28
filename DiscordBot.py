@@ -3,8 +3,11 @@ from sys import prefix
 import discord #importacion libreria de discord
 from discord.ext import commands #importacion de funciones relacionadas con comandos#
 from aiohttp import web
+from aiohttp import WSMsgType
 import asyncio
+
 user_exp={}
+
 class MyClient(discord.Client):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
@@ -25,6 +28,14 @@ class MyClient(discord.Client):
             user_exp[user_id]["level"]+=1 #si llega, sube de nivel
             await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_exp[user_id]["level"]}") #mensaje de confirmacion
 
+async def websocket_handler(request):
+    ws=web.WebSocketResponse()
+    await ws.prepare(request)
+
+    async for msg in ws:
+        if msg.type==WSMsgType.TEXT:
+         if msg.data=="get_status":
+            await ws.send_str('{"status": "active"}')
 #Configuracion del bot con Slash Commands
 bot =commands.Bot(commands_prefix="!",intents=discord.Intents.default())
 
@@ -50,24 +61,28 @@ async def exp(ctx):
 async def handle(request):
     return web.Response(text="Bot is running")
 
+async def handle_status(request):
+    return web.json_response({"status": "active"}, headers={'Access-Control-Allow-Origin': '*'})
+
 async def main():
+    app = web.Application()
+    app.router.add_get('/', handle)
+    app.router.add_get('/status', handle_status)
+    app.router.add_get('/ws', websocket_handler)
+
     intents = discord.Intents.default()
     intents.message_content = True
     client = MyClient(intents=intents)
 
-    # Iniciar el bot de Discord
     loop = asyncio.get_event_loop()
     loop.create_task(client.start(os.getenv("DISCORD_TOKEN")))
+    loop.create_task(bot.start(os.getenv("DISCORD_TOKEN")))
 
-    # Iniciar el servidor web
-    app = web.Application()
-    app.router.add_get('/', handle)
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', int(os.environ.get('PORT', 10000)))
     await site.start()
 
-    # Mantener el proceso en ejecución
     while True:
         await asyncio.sleep(3600)
 
