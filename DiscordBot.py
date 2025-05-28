@@ -1,8 +1,10 @@
 import os
-import discord
+from sys import prefix
+import discord #importacion libreria de discord
+from discord.ext import commands #importacion de funciones relacionadas con comandos#
 from aiohttp import web
 import asyncio
-
+user_exp={}
 class MyClient(discord.Client):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
@@ -10,14 +12,40 @@ class MyClient(discord.Client):
     async def on_message(self, message):
         if message.author == self.user:
             return
+        #sumar la exp enviada en cada mensaje
+        user_id=str(message.author.id)
+        if user_id not in user_exp:
+            user_exp[user_id]={"exp":0,"level":1}
 
-        print(f'Message from {message.author}: {message.content}')
-        if message.content.lower()=="hola":
-            await message.channel.send(f"¡Hola,{message.author.mention}!")
-        if message.content.lower()=="callate":
-                await message.channel.send(f"Callate tú {message.author.mention}, maricon")
-        if message.content.lower()=="adios":
-                await message.channel.send(f"Adios, {message.author.mention}!")
+        user_exp[user_id]["exp"]+=5 #+5 exp por cada mensaje enviado
+
+        #Subir de nivel cuando se llega a la exp requerida
+        exp_needed=user_exp[user_id]["level"]*100
+        if user_exp[user_id]["exp"]>=exp_needed:
+            user_exp[user_id]["level"]+=1 #si llega, sube de nivel
+            await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_exp[user_id]["level"]}") #mensaje de confirmacion
+
+#Configuracion del bot con Slash Commands
+bot =commands.Bot(commands_prefix="!",intents=discord.Intents.default())
+
+@bot.slash_command(name="exp",description="Muestra tu nivel y EXP")
+async def exp(ctx):
+    user_id=str(ctx.author.id)
+    if user_id not in user_exp:
+        await ctx.respond(f"{ctx.author.mention},aun no tienes EXP, envíate algún mensajito pa conseguir home")
+    else:
+        exp_needed=user_exp[user_id]["level"]*100
+        await ctx.respond(
+            f"{ctx.author.mention},eres nivel **{user_exp['level']}**"
+            f"(EXP:{user_exp[user_id]['exp']}/{exp_needed}). Vamos, tu puedes mostro"
+        )
+@bot.slash_command(name="hola",description="Saluda al bot") #comando /hola
+async def hola(ctx):
+    await ctx.respond(f"Hola, {ctx.author.mention}!")
+
+@bot.slash_command(name="!exp",description="Pide experiencia conseguida escribiendo mensajes")
+async def exp(ctx):
+    await ctx.respond(f"{ctx.author.mention} eres nivel ", exp, "felicidades!")
 
 async def handle(request):
     return web.Response(text="Bot is running")
