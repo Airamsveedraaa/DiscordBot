@@ -14,9 +14,10 @@ class MyClient(discord.Client):
         print(f'Message from {message.author}: {message.content}')
         if message.content.lower()=="hola":
             await message.channel.send(f"¡Hola,{message.author.mention}!")
-        else:
-            if message.content.lower()=="callate":
+        if message.content.lower()=="callate":
                 await message.channel.send(f"Callate tú {message.author.mention}, maricon")
+        if message.content.lower()=="adios":
+                await message.channel.send(f"Adios, {message.author.mention}!")
 
 async def handle(request):
     return web.Response(text="Bot is running")
