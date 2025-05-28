@@ -26,7 +26,7 @@ class MyClient(discord.Client):
         exp_needed=user_exp[user_id]["level"]*100
         if user_exp[user_id]["exp"]>=exp_needed:
             user_exp[user_id]["level"]+=1 #si llega, sube de nivel
-            await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_exp[user_id]["level"]}") #mensaje de confirmacion
+            await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_exp[user_id]['level']}") #mensaje de confirmacion
 
 async def websocket_handler(request):
     ws=web.WebSocketResponse()
