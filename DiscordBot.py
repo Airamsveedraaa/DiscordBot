@@ -6,7 +6,7 @@ import asyncio
 
 user_exp = {}
 
-# Configuración del bot (usando solo commands.Bot)
+# Configuración del bot (usando discord.py oficial)
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
@@ -30,32 +30,25 @@ async def on_message(message):
         user_exp[user_id]["level"] += 1
         await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_exp[user_id]['level']}")
 
-    await bot.process_commands(message)  # Importante para procesar comandos
+    await bot.process_commands(message)  # Procesa los comandos
 
-# Slash Commands
-@bot.slash_command(
-    name="exp",
-    description="Muestra tu nivel y EXP",
-    guild_ids=[1282445725166342308]  # Reemplaza con tu ID de servidor
-)
+# Comando !exp
+@bot.command()
 async def exp(ctx):
     user_id = str(ctx.author.id)
     if user_id not in user_exp:
-        await ctx.respond(f"{ctx.author.mention}, aún no tienes EXP. ¡Envía mensajes para ganar!")
+        await ctx.send(f"{ctx.author.mention}, aún no tienes EXP. ¡Envía mensajes para ganar!")
     else:
         exp_needed = user_exp[user_id]["level"] * 100
-        await ctx.respond(
+        await ctx.send(
             f"{ctx.author.mention}, eres nivel **{user_exp[user_id]['level']}** "
             f"(EXP: {user_exp[user_id]['exp']}/{exp_needed}). ¡Sigue así!"
         )
 
-@bot.slash_command(
-    name="hola",
-    description="Saluda al bot",
-    guild_ids=[1282445725166342308]  # Reemplaza con tu ID de servidor
-)
+# Comando !hola
+@bot.command()
 async def hola(ctx):
-    await ctx.respond(f"¡Hola, {ctx.author.mention}!")
+    await ctx.send(f"¡Hola, {ctx.author.mention}!")
 
 # Servidor web
 async def handle(request):
@@ -74,6 +67,7 @@ async def websocket_handler(request):
     return ws
 
 async def main():
+    # Inicia servidor web
     app = web.Application()
     app.router.add_get('/', handle)
     app.router.add_get('/status', handle_status)
@@ -84,8 +78,10 @@ async def main():
     site = web.TCPSite(runner, '0.0.0.0', int(os.environ.get('PORT', 10000)))
     await site.start()
 
+    # Inicia bot
     await bot.start(os.getenv("DISCORD_TOKEN"))
 
+    # Ciclo infinito para mantener el proceso activo (por si acaso)
     while True:
         await asyncio.sleep(3600)
 
