@@ -3,8 +3,16 @@ import discord
 from discord.ext import commands
 from aiohttp import web
 import asyncio
+from daytime import Daytime
+import datetime as dt #para importar libreria de fecha y hora
 
+#declaracion de usuario para almacenar su exp luego
 user_exp = {}
+
+#declaracion de dia y fecha actual para posterior uso
+current_date=dt.date.today()
+current_date.strftime("%A") #formato de salida de los días, para mostrar nombre completo 'Sabado'
+current_date_time=dt.daytime.now() #hora del dia actual
 
 # Configuración del bot (usando discord.py oficial)
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -50,6 +58,21 @@ async def exp(ctx):
 async def hola(ctx):
     await ctx.send(f"¡Hola, {ctx.author.mention}!")
 
+# Comando !adiós
+@bot.command()
+async def adios(ctx):
+    await ctx.send(f"Chao chao chao {ctx.author.mention}")
+
+# Comando !dia
+@bot.command()
+async def dia(ctx):
+    await ctx.send(f"Hoy es {current_date},{ctx.author.mention}")#Insertar para que deuelva hora en tiempo real con un clock¿?
+
+# Comando !hora
+@bot.command()
+async def hora(ctx):
+    await ctx.send(f"Son las {current_date_time},{ctx.author.mention}")
+#
 # Servidor web
 async def handle(request):
     return web.Response(text="Bot is running")
