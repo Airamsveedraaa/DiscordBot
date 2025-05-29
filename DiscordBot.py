@@ -12,7 +12,7 @@ user_exp = {}
 #declaracion de dia y fecha actual para posterior uso
 current_date=dt.date.today()
 current_date.strftime("%A") #formato de salida de los días, para mostrar nombre completo 'Sabado'
-current_date_time=dt.daytime.now() #hora del dia actual
+current_date_time=dt.datetime.now() #hora del dia actual
 
 # Configuración del bot (usando discord.py oficial)
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
