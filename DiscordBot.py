@@ -40,6 +40,15 @@ async def on_message(message):
 
     await bot.process_commands(message)  # Procesa los comandos
 
+# Sistema para detectar entradas/salidas del servidor
+@bot.event
+async def on_member_join(member):
+    print(f"{member.name} has joined the server!")
+
+@bot.event
+async def on_member_remove(member):
+    print(f"{member.name} has left the server!")
+
 # Comando !exp
 @bot.command()
 async def exp(ctx):
@@ -63,16 +72,7 @@ async def hola(ctx):
 async def adios(ctx):
     await ctx.send(f"Chao chao chao {ctx.author.mention}")
 
-# Comando !dia
-@bot.command()
-async def dia(ctx):
-    await ctx.send(f"Hoy es {current_date},{ctx.author.mention}")#Insertar para que deuelva hora en tiempo real con un clock¿?
 
-# Comando !hora
-@bot.command()
-async def hora(ctx):
-    await ctx.send(f"Son las {current_date_time},{ctx.author.mention}")
-#
 # Servidor web
 async def handle(request):
     return web.Response(text="Bot is running")
