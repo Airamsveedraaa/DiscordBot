@@ -1,0 +1,15 @@
+.status { 
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.active { 
+    background-color: #4CAF50; /* Verde */
+    color: white;
+}
+
+.inactive { 
+    background-color: #F44336; /* Rojo */
+    color: white;
+}

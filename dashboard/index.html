@@ -2,66 +2,12 @@
 <html>
 <head>
     <title>Dashboard del Bot</title>
-    <style>
-        .status { 
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-        .active { 
-            background-color: #4CAF50; /* Verde */
-            color: white;
-        }
-        .inactive { 
-            background-color: #F44336; /* Rojo */
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Estado del Bot</h1>
     <p>Estado: <span id="bot-status" class="status">Conectando...</span></p>
 
-    <script>
-        // URL del WebSocket (cambia "tu-bot.onrender.com" por tu URL real)
-        const WS_URL = "wss://discordbot-jv7p.onrender.com/ws";
-        const statusElement = document.getElementById("bot-status");
-        let socket;
-
-        // Función para actualizar el estado en el HTML
-        function updateStatus(status) {
-            statusElement.textContent = status === "active" ? "🟢 Activo" : "🔴 Inactivo";
-            statusElement.className = `status ${status === "active" ? "active" : "inactive"}`;
-        }
-
-        // Conectar al WebSocket
-        function connectWebSocket() {
-            socket = new WebSocket(WS_URL);
-
-            socket.onopen = () => {
-                console.log("Conexión WebSocket establecida");
-                socket.send("get_status"); // Solicitar estado inicial
-            };
-
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                updateStatus(data.status); // Actualizar UI con el estado
-            };
-
-            socket.onclose = () => {
-                updateStatus("inactive"); // Mostrar "Inactivo" si se pierde conexión
-                console.log("Conexión cerrada. Reconectando en 5 segundos...");
-                setTimeout(connectWebSocket, 5000); // Reconectar después de 5 segundos
-            };
-
-            socket.onerror = (error) => {
-                console.error("Error en WebSocket:", error);
-                updateStatus("inactive");
-            };
-        }
-
-        // Iniciar la conexión al cargar la página
-        window.onload = connectWebSocket;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
