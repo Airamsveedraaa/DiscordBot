@@ -13,3 +13,19 @@
     background-color: #F44336; /* Rojo */
     color: white;
 }
+
+body {
+  background-color: #f8f9fa; /* un gris claro */
+}
+
+#open-github-issue:hover {
+  background-color: #024ea2;
+}
+#open-github-issue {
+  background-color: #0366d6; /* Azul de GitHub */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
