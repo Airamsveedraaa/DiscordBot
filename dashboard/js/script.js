@@ -33,17 +33,9 @@ function connectWebSocket() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  connectWebSocket();
-
-  const miBoton = document.getElementById('miBoton');
-  if (miBoton) {
-    miBoton.addEventListener('click', () => {
-      alert('¡Botón clickeado!');
-    });
-  }
-
   const openGithubIssueBtn = document.getElementById('open-github-issue');
   if (openGithubIssueBtn) {
+    openGithubIssueBtn.textContent = "Enviar sugerencia en GitHub"; // aseguramos que el botón tenga texto visible
     openGithubIssueBtn.addEventListener('click', () => {
       const title = encodeURIComponent('Sugerencia de mejora para el bot');
       const body = encodeURIComponent(
@@ -51,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       const url = `https://github.com/Airamsveedraaa/DiscordBot/issues/new?title=${title}&body=${body}`;
-      window.open(url, '_blank');
+      window.open(url, '_blank'); // abrir en nueva pestaña
     });
   }
 });
