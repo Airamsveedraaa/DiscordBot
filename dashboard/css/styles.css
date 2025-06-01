@@ -14,18 +14,50 @@
     color: white;
 }
 
-body {
-  background-color: #f8f9fa; /* un gris claro */
+h1{
+  color:#ffffff; /* Blanco */
+  font-size: 2em;
+  text-align: center;
+  margin-top: 20px;
 }
 
-#open-github-issue:hover {
-  background-color: #024ea2;
+body {
+  background-color: #000000; /* un gris claro */
 }
+
 #open-github-issue {
-  background-color: #0366d6; /* Azul de GitHub */
+  background-color: #9a35e8; /* Azul de GitHub */
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s,transform 0.2s;
+}
+#open-github-issue:hover {
+  background-color: #9a35e893; /* Azul más oscuro al pasar el mouse */
+  transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
+}
+#open-github-issue::before{
+  display: block;
+}
+#open-github-issue.clicked::before{
+  display: none;
+}
+#open-github-issue::after{
+display:none;
+}
+#open-github-issue.clicked::after{
+  display: block;
+}
+
+
+#backgroundCanvas{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Asegura que el canvas esté detrás de otros elementos */
+  pointer-events: none; /* Permite que los eventos del mouse pasen a través del canvas */
 }

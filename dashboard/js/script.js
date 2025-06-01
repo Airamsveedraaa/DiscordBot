@@ -35,8 +35,15 @@ function connectWebSocket() {
 document.addEventListener("DOMContentLoaded", () => {
   const openGithubIssueBtn = document.getElementById('open-github-issue');
   if (openGithubIssueBtn) {
-    openGithubIssueBtn.textContent = "Enviar sugerencia en GitHub"; // aseguramos que el botón tenga texto visible
+
+    openGithubIssueBtn.textContent = "¡Envía tu sugerencia de cambio/mejora aquí!"; // aseguramos que el botón tenga texto visible
     openGithubIssueBtn.addEventListener('click', () => {
+
+
+    openGithubIssueBtn.classList.add('clicked'); // Agrega la clase al hacer clic
+
+      openGithubIssueBtn.textContent = "¡Gracias por tu sugerencia :) !"; // Cambia el texto del botón
+      openGithubIssueBtn.disabled = true; // Deshabilita el botón para evitar múltiples clics
       const title = encodeURIComponent('Sugerencia de mejora para el bot');
       const body = encodeURIComponent(
         'Describe tu sugerencia aquí:\n\n- ¿Qué te gustaría que cambiara o añadiera?\n- ¿Por qué sería útil?'
