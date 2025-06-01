@@ -33,6 +33,7 @@ function connectWebSocket() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  connectWebSocket();
   const openGithubIssueBtn = document.getElementById('open-github-issue');
   if (openGithubIssueBtn) {
 
