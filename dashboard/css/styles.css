@@ -5,12 +5,11 @@
 }
 
 .active { 
-    background-color: #4CAF50; /* Verde */
-    color: white;
+background-color: rgba(76, 175, 80, 0.6); /* Verde translúcido */    color: white;
 }
 
 .inactive { 
-    background-color: #F44336; /* Rojo */
+  background-color: rgba(244, 67, 54, 0.6); /* Rojo translúcido */
     color: white;
 }
 
@@ -23,12 +22,11 @@ h1{
 
 body {
   margin: 0;
-  background-color: #000000; /* un gris claro */
+  background-color: #0a0a0a; /* un gris claro */
 }
 
 #open-github-issue {
-  background-color: #9a35e8; /* Azul de GitHub */
-  color: white;
+ background-color: rgba(154, 53, 232, 0.6); /* morado translúcido */  color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -36,7 +34,7 @@ body {
   transition: background-color 0.3s,transform 0.2s;
 }
 #open-github-issue:hover {
-  background-color: #9a35e893; /* Azul más oscuro al pasar el mouse */
+  background-color: rgba(154, 53, 232, 0.8);
   transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
 }
 #open-github-issue::before{
@@ -62,3 +60,28 @@ display:none;
   z-index: -1; /* Asegura que el canvas esté detrás de otros elementos */
   pointer-events: none; /* Permite que los eventos del mouse pasen a través del canvas */
 }
+
+body,html{
+  margin:0;
+  padding:0;
+  overflow: hidden;
+  background-color: #0a0a0a;
+}
+
+#miCanvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1; /* Asegura que el canvas esté detrás de otros elementos */
+}
+
+.fondo-translucido {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
