@@ -5,63 +5,56 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Configuración de los cuadrados
-const cuadrados = [];
-const tamanoCuadrado = 20;
-const velocidad = 2;
-const colores = ["#E0F2FE", "#BAE6FD", "#7DD3FC", "#38BDF8"]; // Tonos azules claros (puedes cambiarlos)
+// Configuración de la cuadrícula
+const tamañoCelda = 40; // Tamaño de cada cuadrado de la cuadrícula
+const grosorLinea = 1; // Grosor de las líneas
+const colorLinea = "rgba(255, 255, 255, 0.1)"; // Color blanco con transparencia (ajusta el alpha)
 
-// Crear cuadrados iniciales
-function inicializarCuadrados() {
-  for (let i = 0; i < 30; i++) {
-    cuadrados.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height - canvas.height, // Empiezan arriba de la pantalla
-      color: colores[Math.floor(Math.random() * colores.length)],
-      velocidadX: velocidad * (Math.random() * 0.5 + 0.5), // Diagonal variable
-      velocidadY: velocidad * (Math.random() * 0.5 + 0.5),
-    });
+// Función para dibujar la cuadrícula
+function dibujarCuadricula() {
+  ctx.strokeStyle = colorLinea;
+  ctx.lineWidth = grosorLinea;
+
+  // Líneas verticales
+  for (let x = 0; x < canvas.width; x += tamañoCelda) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+
+  // Líneas horizontales
+  for (let y = 0; y < canvas.height; y += tamañoCelda) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
   }
 }
 
-// Función para animar
+// Animación sutil (opcional: desplazamiento lento)
+let offset = 0;
 function animar() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Dibujar y mover cuadrados
-  cuadrados.forEach((cuadrado, index) => {
-    ctx.fillStyle = cuadrado.color;
-    ctx.fillRect(cuadrado.x, cuadrado.y, tamanoCuadrado, tamanoCuadrado);
-
-    // Mover en diagonal
-    cuadrado.x += cuadrado.velocidadX;
-    cuadrado.y += cuadrado.velocidadY;
-
-    // Reiniciar posición si sale de la pantalla
-    if (
-      cuadrado.y > canvas.height ||
-      cuadrado.x > canvas.width ||
-      cuadrado.x < -tamanoCuadrado
-    ) {
-      cuadrados[index] = {
-        x: Math.random() * canvas.width,
-        y: -tamanoCuadrado,
-        color: colores[Math.floor(Math.random() * colores.length)],
-        velocidadX: velocidad * (Math.random() * 0.5 + 0.5),
-        velocidadY: velocidad * (Math.random() * 0.5 + 0.5),
-      };
-    }
-  });
-
+  
+  // Mover la cuadrícula (efecto de desplazamiento suave)
+  offset += 0.2; // Ajusta la velocidad
+  ctx.save();
+  ctx.translate(offset % tamañoCelda, offset % tamañoCelda);
+  
+  dibujarCuadricula();
+  ctx.restore();
+  
   requestAnimationFrame(animar);
 }
 
-// Iniciar
-inicializarCuadrados();
-animar();
+// Iniciar (elige una opción):
+animar(); // Para animación sutil
+// dibujarCuadricula(); // Para cuadrícula estática
 
-// Redimensionar canvas si cambia el tamaño de la ventana
+// Redimensionar al cambiar el tamaño de la ventana
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  dibujarCuadricula();
 });
