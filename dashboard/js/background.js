@@ -9,7 +9,7 @@ canvas.height = window.innerHeight;
 const tamañoCelda = 40; // Tamaño de cada cuadrado de la cuadrícula
 const grosorLinea = 1; // Grosor de las líneas
 const colorLinea = "rgba(255, 255, 255, 1)"; // Color blanco con transparencia (ajusta el alpha)
-
+ctx.globalCompositeOperation = "lighter"; // Asegura que el fondo se dibuje correctamente
 // Función para dibujar la cuadrícula
 function dibujarCuadricula() {
   ctx.strokeStyle = colorLinea;
