@@ -1,64 +1,67 @@
-function backgroundAnimation() {
-    const canvas = document.getElementById('backgroundCanvas');
-    const ctx = canvas.getContext('2d');
-    const particles = [];
-    const particleCount = 100;
+const canvas = document.getElementById("miCanvas");
+const ctx = canvas.getContext("2d");
 
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+// Ajustar canvas al tamaño de la ventana
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-    class Particle {
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 5 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-        }
+// Configuración de los cuadrados
+const cuadrados = [];
+const tamanoCuadrado = 20;
+const velocidad = 2;
+const colores = ["#E0F2FE", "#BAE6FD", "#7DD3FC", "#38BDF8"]; // Tonos azules claros (puedes cambiarlos)
 
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-        }
-
-        draw() {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-
-    // Crear partículas iniciales
-    for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle(
-            Math.random() * canvas.width,
-            Math.random() * canvas.height
-        ));
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].draw();
-            // Reiniciar partícula si desaparece
-            if (particles[i].size <= 0.2) {
-                particles[i] = new Particle(
-                    Math.random() * canvas.width,
-                    Math.random() * canvas.height
-                );
-            }
-        }
-        requestAnimationFrame(animate);
-    }
-
-    animate();
+// Crear cuadrados iniciales
+function inicializarCuadrados() {
+  for (let i = 0; i < 30; i++) {
+    cuadrados.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height, // Empiezan arriba de la pantalla
+      color: colores[Math.floor(Math.random() * colores.length)],
+      velocidadX: velocidad * (Math.random() * 0.5 + 0.5), // Diagonal variable
+      velocidadY: velocidad * (Math.random() * 0.5 + 0.5),
+    });
+  }
 }
 
-backgroundAnimation();
+// Función para animar
+function animar() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Dibujar y mover cuadrados
+  cuadrados.forEach((cuadrado, index) => {
+    ctx.fillStyle = cuadrado.color;
+    ctx.fillRect(cuadrado.x, cuadrado.y, tamanoCuadrado, tamanoCuadrado);
+
+    // Mover en diagonal
+    cuadrado.x += cuadrado.velocidadX;
+    cuadrado.y += cuadrado.velocidadY;
+
+    // Reiniciar posición si sale de la pantalla
+    if (
+      cuadrado.y > canvas.height ||
+      cuadrado.x > canvas.width ||
+      cuadrado.x < -tamanoCuadrado
+    ) {
+      cuadrados[index] = {
+        x: Math.random() * canvas.width,
+        y: -tamanoCuadrado,
+        color: colores[Math.floor(Math.random() * colores.length)],
+        velocidadX: velocidad * (Math.random() * 0.5 + 0.5),
+        velocidadY: velocidad * (Math.random() * 0.5 + 0.5),
+      };
+    }
+  });
+
+  requestAnimationFrame(animar);
+}
+
+// Iniciar
+inicializarCuadrados();
+animar();
+
+// Redimensionar canvas si cambia el tamaño de la ventana
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
