@@ -8,7 +8,7 @@ canvas.height = window.innerHeight;
 // Configuración de la cuadrícula
 const tamañoCelda = 40; // Tamaño de cada cuadrado de la cuadrícula
 const grosorLinea = 1; // Grosor de las líneas
-const colorLinea = "rgba(255, 255, 255, 1)"; // Color blanco con transparencia (ajusta el alpha)
+const colorLinea = "rgba(255, 255, 255, 0.15)"; // Color blanco con transparencia (ajusta el alpha)
 ctx.globalCompositeOperation = "lighter"; // Asegura que el fondo se dibuje correctamente
 // Función para dibujar la cuadrícula
 function dibujarCuadricula() {
@@ -16,7 +16,7 @@ function dibujarCuadricula() {
   ctx.lineWidth = grosorLinea;
 
   // Líneas verticales
-  for (let x = 0; x < canvas.width; x += tamañoCelda) {
+  for (let x = 0.5; x < canvas.width; x += tamañoCelda) {
     ctx.beginPath();
     ctx.moveTo(x, 0);
     ctx.lineTo(x, canvas.height);
@@ -24,7 +24,7 @@ function dibujarCuadricula() {
   }
 
   // Líneas horizontales
-  for (let y = 0; y < canvas.height; y += tamañoCelda) {
+  for (let y = 0.5; y < canvas.height; y += tamañoCelda) {
     ctx.beginPath();
     ctx.moveTo(0, y);
     ctx.lineTo(canvas.width, y);

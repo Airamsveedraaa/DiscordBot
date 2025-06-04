@@ -22,6 +22,7 @@ h1{
 }
 
 body {
+  margin: 0;
   background-color: #000000; /* un gris claro */
 }
 
