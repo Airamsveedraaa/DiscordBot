@@ -15,11 +15,12 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <canvas id="backgroundCanvas"></canvas>
   <div class="container mt-4">
     <h1 class="text-center">CoCoBot V1.0</h1>
-<span id="bot-status" class="status inactive">🔴 Inactivo</span>
-<button
+    <div class="estado-bot text-center mb-4">
+      <span class="estado-label">Estado actual del bot:</span>
+      <span class="status-minimal" id="bot-status">🔴 Inactivo</span>
+</div><button
   id="open-github-issue"
   class="btn btn-primary"
 >

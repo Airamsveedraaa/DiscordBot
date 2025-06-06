@@ -4,7 +4,7 @@ let socket;
 
 function updateStatus(status) {
   statusElement.textContent = status === "active" ? "🟢 Activo" : "🔴 Inactivo";
-  statusElement.className = `status ${status === "active" ? "active" : "inactive"}`;
+  statusElement.className = `status-minimal ${status === "active" ? "active" : "inactive"}`;
 }
 
 function connectWebSocket() {
