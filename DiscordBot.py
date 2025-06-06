@@ -4,15 +4,43 @@ from discord.ext import commands
 from aiohttp import web
 import asyncio
 from daytime import Daytime
-import datetime as dt #para importar libreria de fecha y hora
+import datetime as dt  # para importar libreria de fecha y hora
+import sqlite3  # para la BD
 
-#declaracion de usuario para almacenar su exp luego
-user_exp = {}
+# Conexión a la base de datos (se crea el archivo si no existe)
+conn = sqlite3.connect('exp.db')
+cursor = conn.cursor()
 
-#declaracion de dia y fecha actual para posterior uso
-current_date=dt.date.today()
-current_date.strftime("%A") #formato de salida de los días, para mostrar nombre completo 'Sabado'
-current_date_time=dt.datetime.now() #hora del dia actual
+# Crear tabla si no existe
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS user_exp (
+    user_id TEXT PRIMARY KEY,
+    exp INTEGER NOT NULL,
+    level INTEGER NOT NULL
+)
+''')
+conn.commit()
+
+def get_user_exp(user_id):
+    cursor.execute('SELECT exp, level FROM user_exp WHERE user_id = ?', (user_id,))
+    row = cursor.fetchone()
+    if row:
+        return {"exp": row[0], "level": row[1]}
+    else:
+        return {"exp": 0, "level": 1}
+
+def set_user_exp(user_id, exp, level):
+    cursor.execute('''
+        INSERT INTO user_exp (user_id, exp, level)
+        VALUES (?, ?, ?)
+        ON CONFLICT(user_id) DO UPDATE SET exp=excluded.exp, level=excluded.level
+    ''', (user_id, exp, level))
+    conn.commit()
+
+# Declaración de día y fecha actual para posterior uso
+current_date = dt.date.today()
+current_date.strftime("%A")  # formato de salida de los días, para mostrar nombre completo 'Sabado'
+current_date_time = dt.datetime.now()  # hora del dia actual
 
 # Configuración del bot (usando discord.py oficial)
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -26,19 +54,17 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # Sistema de EXP
     user_id = str(message.author.id)
-    if user_id not in user_exp:
-        user_exp[user_id] = {"exp": 0, "level": 1}
+    user_data = get_user_exp(user_id)
+    user_data["exp"] += 5
 
-    user_exp[user_id]["exp"] += 5
+    exp_needed = user_data["level"] * 100
+    if user_data["exp"] >= exp_needed:
+        user_data["level"] += 1
+        await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_data['level']}")
 
-    exp_needed = user_exp[user_id]["level"] * 100
-    if user_exp[user_id]["exp"] >= exp_needed:
-        user_exp[user_id]["level"] += 1
-        await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_exp[user_id]['level']}")
-
-    await bot.process_commands(message)  # Procesa los comandos
+    set_user_exp(user_id, user_data["exp"], user_data["level"])
+    await bot.process_commands(message)
 
 # Sistema para detectar entradas/salidas del servidor
 @bot.event
@@ -53,14 +79,12 @@ async def on_member_remove(member):
 @bot.command()
 async def exp(ctx):
     user_id = str(ctx.author.id)
-    if user_id not in user_exp:
-        await ctx.send(f"{ctx.author.mention}, aún no tienes EXP. ¡Envía mensajes para ganar!")
-    else:
-        exp_needed = user_exp[user_id]["level"] * 100
-        await ctx.send(
-            f"{ctx.author.mention}, eres nivel **{user_exp[user_id]['level']}** "
-            f"(EXP: {user_exp[user_id]['exp']}/{exp_needed}). ¡Sigue así!"
-        )
+    user_data = get_user_exp(user_id)
+    exp_needed = user_data["level"] * 100
+    await ctx.send(
+        f"{ctx.author.mention}, eres nivel **{user_data['level']}** "
+        f"(EXP: {user_data['exp']}/{exp_needed}). ¡Sigue así!"
+    )
 
 # Comando !hola
 @bot.command()
@@ -71,7 +95,6 @@ async def hola(ctx):
 @bot.command()
 async def adios(ctx):
     await ctx.send(f"Chao chao chao {ctx.author.mention}")
-
 
 # Servidor web
 async def handle(request):

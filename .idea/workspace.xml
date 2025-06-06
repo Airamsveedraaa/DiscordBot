@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2b7d753-bd95-4b28-8ef5-b8508038f112" name="Changes" comment="" />
+    <list default="true" id="a2b7d753-bd95-4b28-8ef5-b8508038f112" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,6 +81,7 @@
       <workItem from="1748638333901" duration="834000" />
       <workItem from="1748797413267" duration="600000" />
       <workItem from="1749062660550" duration="1499000" />
+      <workItem from="1749235081071" duration="222000" />
     </task>
     <servers />
   </component>
