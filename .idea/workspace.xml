@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2b7d753-bd95-4b28-8ef5-b8508038f112" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DiscordBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiscordBot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,6 +35,9 @@
     &quot;accountId&quot;: &quot;80b9cdd1-69f6-4d4c-aada-b295a5ba56ce&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -81,7 +85,9 @@
       <workItem from="1748638333901" duration="834000" />
       <workItem from="1748797413267" duration="600000" />
       <workItem from="1749062660550" duration="1499000" />
-      <workItem from="1749235081071" duration="222000" />
+      <workItem from="1749235081071" duration="2548000" />
+      <workItem from="1749462215246" duration="599000" />
+      <workItem from="1749671947137" duration="292000" />
     </task>
     <servers />
   </component>
@@ -94,5 +100,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DiscordBot$DiscordBot.coverage" NAME="DiscordBot Coverage Results" MODIFIED="1748422198278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/DiscordBot_py$DiscordBot.coverage" NAME="DiscordBot Coverage Results" MODIFIED="1749239035145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

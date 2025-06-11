@@ -6,36 +6,7 @@ import asyncio
 from daytime import Daytime
 import datetime as dt  # para importar libreria de fecha y hora
 import sqlite3  # para la BD
-
-# Conexión a la base de datos (se crea el archivo si no existe)
-conn = sqlite3.connect('exp.db')
-cursor = conn.cursor()
-
-# Crear tabla si no existe
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS user_exp (
-    user_id TEXT PRIMARY KEY,
-    exp INTEGER NOT NULL,
-    level INTEGER NOT NULL
-)
-''')
-conn.commit()
-
-def get_user_exp(user_id):
-    cursor.execute('SELECT exp, level FROM user_exp WHERE user_id = ?', (user_id,))
-    row = cursor.fetchone()
-    if row:
-        return {"exp": row[0], "level": row[1]}
-    else:
-        return {"exp": 0, "level": 1}
-
-def set_user_exp(user_id, exp, level):
-    cursor.execute('''
-        INSERT INTO user_exp (user_id, exp, level)
-        VALUES (?, ?, ?)
-        ON CONFLICT(user_id) DO UPDATE SET exp=excluded.exp, level=excluded.level
-    ''', (user_id, exp, level))
-    conn.commit()
+from database import get_user_exp, set_user_exp, init_db
 
 # Declaración de día y fecha actual para posterior uso
 current_date = dt.date.today()
@@ -55,15 +26,15 @@ async def on_message(message):
         return
 
     user_id = str(message.author.id)
-    user_data = get_user_exp(user_id)
-    user_data["exp"] += 5
+    user_data = await get_user_exp(user_id)
+    user_data.exp += 5
 
-    exp_needed = user_data["level"] * 100
-    if user_data["exp"] >= exp_needed:
-        user_data["level"] += 1
-        await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_data['level']}")
+    exp_needed = user_data.level * 100
+    if user_data.exp >= exp_needed:
+        user_data.level += 1
+        await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_data.level}")
 
-    set_user_exp(user_id, user_data["exp"], user_data["level"])
+    await set_user_exp(user_id, user_data.exp, user_data.level)
     await bot.process_commands(message)
 
 # Sistema para detectar entradas/salidas del servidor
@@ -79,11 +50,11 @@ async def on_member_remove(member):
 @bot.command()
 async def exp(ctx):
     user_id = str(ctx.author.id)
-    user_data = get_user_exp(user_id)
-    exp_needed = user_data["level"] * 100
+    user_data = await get_user_exp(user_id)
+    exp_needed = user_data.level * 100
     await ctx.send(
-        f"{ctx.author.mention}, eres nivel **{user_data['level']}** "
-        f"(EXP: {user_data['exp']}/{exp_needed}). ¡Sigue así!"
+        f"{ctx.author.mention}, eres nivel **{user_data.level}** "
+        f"(EXP: {user_data.exp}/{exp_needed}). ¡Sigue así!"
     )
 
 # Comando !hola
@@ -123,6 +94,8 @@ async def main():
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', int(os.environ.get('PORT', 10000)))
     await site.start()
+
+    await init_db()  # Esto crea las tablas si no existen
 
     # Inicia bot
     await bot.start(os.getenv("DISCORD_TOKEN"))
