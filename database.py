@@ -1,7 +1,7 @@
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, NullPool
 from sqlalchemy.future import select
 
 DATABASE_URL = os.getenv(
@@ -14,7 +14,8 @@ Base = declarative_base()
 engine = create_async_engine(
     DATABASE_URL,
     echo=True,
-    connect_args={"statement_cache_size": 0}  # 👈 Esto soluciona el error con pgbouncer
+    connect_args={"statement_cache_size": 0},  # 👈 Esto soluciona el error con pgbouncer
+    poolclass=NullPool,
 )
 
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
