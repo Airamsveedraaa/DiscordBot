@@ -5,8 +5,7 @@ from aiohttp import web
 import asyncio
 from daytime import Daytime
 import datetime as dt  # para importar libreria de fecha y hora
-import sqlite3  # para la BD
-from database import get_user_exp, set_user_exp, init_db
+from database import init_db, get_experience, add_experience, get_user_exp, set_user_exp
 
 # Declaración de día y fecha actual para posterior uso
 current_date = dt.date.today()
@@ -18,6 +17,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
 async def on_ready():
+    await init_db()
     print(f'Logged on as {bot.user}!')
 
 @bot.event
@@ -48,14 +48,12 @@ async def on_member_remove(member):
 
 # Comando !exp
 @bot.command()
-async def exp(ctx):
+async def exp(ctx, amount: int = 10):
     user_id = str(ctx.author.id)
-    user_data = await get_user_exp(user_id)
-    exp_needed = user_data.level * 100
-    await ctx.send(
-        f"{ctx.author.mention}, eres nivel **{user_data.level}** "
-        f"(EXP: {user_data.exp}/{exp_needed}). ¡Sigue así!"
-    )
+    await add_experience(user_id, amount)
+    new_exp = await get_experience(user_id)
+    await ctx.send(f"{ctx.author.mention} ahora tiene {new_exp} puntos de experiencia.")
+
 
 # Comando !hola
 @bot.command()
