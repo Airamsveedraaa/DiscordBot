@@ -1,18 +1,26 @@
 import os
+import ssl
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.future import select
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./exp.db")
+# URL sin sslmode=require
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres.tmgevmaxplxzuzrkqcps:[YOUR_PASSWORD]@aws-0-eu-west-2.pooler.supabase.com:6543/postgres")
+
+# Crear contexto SSL requerido por Supabase
+ssl_context = ssl.create_default_context()
 
 Base = declarative_base()
-engine = create_async_engine(DATABASE_URL, echo=True)
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=True,
+    connect_args={"ssl": ssl_context}
+)
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 class UserExp(Base):
     __tablename__ = "user_exp"
-
     user_id = Column(String, primary_key=True, index=True)
     exp = Column(Integer, default=0)
     level = Column(Integer, default=1)
