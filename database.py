@@ -4,21 +4,20 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.future import select
 
-# URL de conexión obtenida de las variables de entorno (Render)
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql+asyncpg://postgres.tmgevmaxplxzuzrkqcps:s85bAQuH%25Pq%24H6c@aws-0-eu-west-2.pooler.supabase.com:6543/postgres"
 )
 
-# Crear engine con statement_cache_size=0 para evitar errores con pgbouncer
+Base = declarative_base()
+
 engine = create_async_engine(
     DATABASE_URL,
     echo=True,
-    connect_args={"statement_cache_size": 0}
+    connect_args={"statement_cache_size": 0}  # 👈 Esto soluciona el error con pgbouncer
 )
 
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-Base = declarative_base()
 
 class UserExp(Base):
     __tablename__ = "user_exp"
