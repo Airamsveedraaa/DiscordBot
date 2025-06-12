@@ -25,17 +25,21 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    user_id = str(message.author.id)
-    user_data = await get_user_exp(user_id)
-    user_data.exp += 5
+    try:
+        user_id = str(message.author.id)
+        user_data = await get_user_exp(user_id)
+        user_data["exp"] += 5
 
-    exp_needed = user_data.level * 100
-    if user_data.exp >= exp_needed:
-        user_data.level += 1
-        await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_data.level}")
+        exp_needed = user_data["level"] * 100
+        if user_data["exp"] >= exp_needed:
+            user_data["level"] += 1
+            await message.channel.send(f"🎉 {message.author.mention} subió al nivel {user_data['level']}")
 
-    await set_user_exp(user_id, user_data.exp, user_data.level)
-    await bot.process_commands(message)
+        await set_user_exp(user_id, user_data["exp"], user_data["level"])
+        await bot.process_commands(message)
+    except Exception as e:
+        print(f"[on_message error] {e}")
+
 
 # Sistema para detectar entradas/salidas del servidor
 @bot.event
