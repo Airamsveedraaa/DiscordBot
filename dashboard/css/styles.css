@@ -95,6 +95,8 @@
   letter-spacing: 0.5px;
   box-shadow: 0 2px 8px rgba(154, 53, 232, 0.08);
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  margin: 0 auto;
+  display: block;
 }
 #open-github-issue:hover {
   background-color: rgba(154, 53, 232, 0.9);
@@ -160,36 +162,8 @@ h2 {
   font-weight: 400;
 }
 
-.main-content-collapsed {
-  flex: 1 0 auto;
-  margin-left: 60px;
-  transition: margin-left 0.3s;
-}
-
+/* Responsive */
 @media (max-width: 991px) {
-  .main-content-collapsed {
-    margin-left: 0 !important;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-  }
-  .sidebar-collapsed {
-    width: 0;
-    min-width: 0;
-    padding-top: 0;
-    transition: width 0.3s;
-  }
-  .sidebar-collapsed:hover,
-  .sidebar-collapsed:focus-within {
-    width: 80vw;
-    min-width: 120px;
-    padding-top: 2em;
-  }
-  .estado-bot-lateral {
-    width: 90vw;
-    min-width: 120px;
-    font-size: 1em;
-    padding: 1em 0.5em;
-  }
   section {
     padding: 1em 0.5em 1em 0.5em;
   }
