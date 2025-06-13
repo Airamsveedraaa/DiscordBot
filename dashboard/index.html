@@ -15,26 +15,126 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div class="container mt-4">
-    <h1 class="text-center">CoCoBot V1.0</h1>
-    <div class="estado-bot text-center mb-4">
-      <span class="estado-label">Estado actual del bot:</span>
+  <!-- Sidebar colapsable -->
+  <aside class="sidebar-collapsed">
+    <div class="estado-bot-lateral fondo-translucido">
+      <span class="estado-label">Estado del bot:</span>
       <span class="status-minimal" id="bot-status">🔴 Inactivo</span>
-</div><button
-  id="open-github-issue"
-  class="btn btn-primary"
->
-</button>
+    </div>
+  </aside>
+
+  <div class="container mt-4 main-content-collapsed">
+    <!-- Título y descripción siempre visibles -->
+    <h1 class="text-center">CoCoBot V1.0</h1>
+    <p class="lead text-center mb-4">
+      CoCoBot es tu asistente para servidores de Discord: administra, diviértete y potencia tu comunidad con comandos útiles y un sistema de experiencia.
+    </p>
+    <!-- Aquí puedes agregar estadísticas como servidores, usuarios, etc. -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-auto">
+        <span class="badge bg-primary fs-6">🟢 12 servidores activos</span>
+      </div>
+      <div class="col-auto">
+        <span class="badge bg-secondary fs-6">👥 1,234 usuarios</span>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#estado-bot-section">Estado del Bot</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#comandos-section">Comandos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#ranking-section">Ranking</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sección Estado del Bot -->
+    <section id="estado-bot-section" class="mb-5">
+      <h2 class="mb-3">Estado del Bot</h2>
+      <div class="alert alert-success">
+        El bot está <strong>activo</strong> y funcionando correctamente.
+      </div>
+    </section>
+
+    <!-- Sección Comandos -->
+    <section id="comandos-section" class="mb-5">
+      <h2 class="mb-3">Comandos soportados</h2>
+      <ul class="list-group">
+        <li class="list-group-item">!ayuda - Muestra la lista de comandos</li>
+        <li class="list-group-item">!exp - Consulta tu experiencia</li>
+        <li class="list-group-item">!ranking - Muestra el ranking de usuarios</li>
+        <li class="list-group-item">!info - Información del bot</li>
+        <!-- Agrega más comandos aquí -->
+      </ul>
+    </section>
+
+    <!-- Sección Ranking -->
+    <section id="ranking-section" class="mb-5">
+      <h2 class="mb-3">Ranking de usuarios</h2>
+      <div class="table-responsive">
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Usuario</th>
+              <th>Experiencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>@UsuarioTop1</td>
+              <td>3500</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>@UsuarioTop2</td>
+              <td>3200</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>@UsuarioTop3</td>
+              <td>3000</td>
+            </tr>
+            <!-- Más filas dinámicas aquí -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <button
+      id="open-github-issue"
+      class="btn btn-primary mb-4"
+    >
+      Reportar un problema
+    </button>
     <div class="alert alert-info mt-3" style="display: none;">
+      <!-- Mensaje de alerta aquí -->
     </div>
   </div>
 
   <!-- Bootstrap Bundle JS (Popper + Bootstrap JS) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<canvas id="miCanvas"></canvas> 
- <script src="js/background.js"></script>
-
-  <!-- Tu JS local -->
+  <canvas id="miCanvas"></canvas> 
+  <script src="js/background.js"></script>
   <script src="js/script.js"></script>
+  <footer class="footer text-center mt-4">
+    <p>© 2025 L.saavedra. Todos los derechos reservados.</p>
+  </footer>
 </body>
 </html>
