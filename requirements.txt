@@ -3,3 +3,4 @@ aiohttp~=3.12.2
 sqlalchemy[asyncio]~=2.0
 asyncpg~=0.29
 daytime~=0.4
+python-dotenv
