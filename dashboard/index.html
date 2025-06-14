@@ -77,43 +77,29 @@
 
     <!-- Sección Ranking -->
     <section id="ranking-section" class="mb-5">
-      <h2 class="mb-3">Ranking de usuarios</h2>
+      <h2 class="mb-3">Ranking de experiencia</h2>
       <div class="table-responsive">
         <table class="table table-dark table-striped">
           <thead>
             <tr>
-              <th>#</th>
+              <th>Puesto</th>
               <th>Usuario</th>
               <th>Experiencia</th>
+              <th>Nivel</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>@UsuarioTop1</td>
-              <td>3500</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>@UsuarioTop2</td>
-              <td>3200</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>@UsuarioTop3</td>
-              <td>3000</td>
-            </tr>
-            <!-- Más filas dinámicas aquí -->
+            <!-- Aquí se llenará dinámicamente -->
           </tbody>
         </table>
       </div>
+      <div id="ranking-pagination" style="text-align:center; margin-top:1em;"></div>
     </section>
 
     <button
       id="open-github-issue"
       class="btn btn-primary mb-4"
     >
-      Reportar un problema
     </button>
     <div class="alert alert-info mt-3" style="display: none;">
       <!-- Mensaje de alerta aquí -->

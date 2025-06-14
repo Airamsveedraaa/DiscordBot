@@ -32,8 +32,45 @@ function connectWebSocket() {
   };
 }
 
+let currentPage = 1;
+let totalPages = 1;
+
+async function cargarRanking(page = 1) {
+  const response = await fetch(`https://discordbot-jv7p.onrender.com/api/ranking?page=${page}`);
+  const result = await response.json();
+  const data = result.data;
+  const tbody = document.querySelector("#ranking-section tbody");
+  tbody.innerHTML = "";
+  data.forEach((user, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${(page - 1) * result.per_page + i + 1}</td>
+      <td>
+        <img src="${user.avatar_url || ''}" alt="avatar" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
+        ${user.username || user.user_id}
+      </td>
+      <td>${user.experience}</td>
+      <td>${user.level}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Actualiza paginación
+  currentPage = result.page;
+  totalPages = Math.ceil(result.total / result.per_page);
+  document.getElementById("ranking-pagination").innerHTML = `
+    <button ${currentPage === 1 ? "disabled" : ""} id="prev-page">Anterior</button>
+    Página ${currentPage} de ${totalPages}
+    <button ${currentPage === totalPages ? "disabled" : ""} id="next-page">Siguiente</button>
+  `;
+
+  document.getElementById("prev-page").onclick = () => cargarRanking(currentPage - 1);
+  document.getElementById("next-page").onclick = () => cargarRanking(currentPage + 1);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   connectWebSocket();
+  cargarRanking();
   const openGithubIssueBtn = document.getElementById('open-github-issue');
   if (openGithubIssueBtn) {
 
