@@ -131,7 +131,11 @@ async def handle(request):
     return web.Response(text="Bot is running")
 
 async def handle_status(request):
-    return web.json_response({"status": "active"}, headers={'Access-Control-Allow-Origin': '*'})
+    if not bot.is_ready() or bot.is_closed():
+        status = "inactive"
+    else:
+        status = "active"
+    return web.json_response({"status": status}, headers={'Access-Control-Allow-Origin': '*'})
 
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
@@ -169,6 +173,14 @@ async def handle_ranking(request):
     except Exception as e:
         return web.json_response({"error": str(e)}, status=500)
 
+# Endpoint para estadísticas de servidores y usuarios únicos
+async def handle_stats(request):
+    num_guilds = len(bot.guilds)
+    num_users = len(set(bot.get_all_members()))
+    return web.json_response({
+        "servers": num_guilds,
+        "users": num_users
+    }, headers={'Access-Control-Allow-Origin': '*'})
 
 async def main():
     # Inicia servidor web
@@ -177,6 +189,7 @@ async def main():
     app.router.add_get('/status', handle_status)
     app.router.add_get('/ws', websocket_handler)
     app.router.add_get('/api/ranking', handle_ranking)
+    app.router.add_get('/api/stats', handle_stats)  # <-- Añade esta línea
 
     runner = web.AppRunner(app)
     await runner.setup()

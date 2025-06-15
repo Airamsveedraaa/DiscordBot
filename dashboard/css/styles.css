@@ -226,18 +226,82 @@ h2 {
 }
 
 /* Estadísticas */
+.badge {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  font-weight: bold;
+  margin-right: 0.5em;
+  font-size: 1em;
+}
+
 .badge.bg-primary {
-  background: linear-gradient(90deg, #9a35e8 60%, #4caf50 100%);
+  background: #9a35e8;
   color: #fff;
   font-weight: 500;
   box-shadow: 0 2px 8px rgba(154, 53, 232, 0.10);
 }
 
 .badge.bg-secondary {
-  background: linear-gradient(90deg, #9a35e8 60%, #2196f3 100%);
+  background: #333;
   color: #fff;
   font-weight: 500;
   box-shadow: 0 2px 8px rgba(154, 53, 232, 0.10);
+}
+
+/* Centrado de los badges */
+.badges-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+/* Badge base */
+.custom-badge {
+  display: flex;
+  align-items: center;
+  padding: 0.5em 1.7em;
+  border-radius: 2em;
+  font-weight: bold;
+  font-size: 1.15em;
+  box-shadow: 0 2px 12px rgba(162, 89, 230, 0.15);
+  letter-spacing: 0.5px;
+  gap: 0.6em;
+}
+
+/* Badge de servidores: gradiente verde-morado */
+.servers-badge {
+  background: linear-gradient(90deg, #18e06f 0%, #a259e6 100%);
+  color: #fff;
+}
+
+/* Badge de usuarios: gradiente morado-azul */
+.users-badge {
+  background: linear-gradient(90deg, #a259e6 0%, #6d36c7 60%, #3b82f6 100%);
+  color: #fff;
+}
+
+/* Icono y número */
+.badge-icon {
+  font-size: 1.25em;
+  margin-right: 0.3em;
+  display: flex;
+  align-items: center;
+}
+.badge-number {
+  font-size: 1.15em;
+  font-weight: 900;
+  margin-right: 0.3em;
+  margin-left: 0.1em;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.badge-label {
+  font-size: 1em;
+  font-weight: 500;
+  opacity: 0.93;
 }
 
 /* Secciones */

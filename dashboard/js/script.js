@@ -68,9 +68,17 @@ async function cargarRanking(page = 1) {
   document.getElementById("next-page").onclick = () => cargarRanking(currentPage + 1);
 }
 
+async function cargarStats() {
+  const response = await fetch("https://discordbot-jv7p.onrender.com/api/stats");
+  const data = await response.json();
+  document.getElementById("servers-number").textContent = data.servers;
+  document.getElementById("users-number").textContent = data.users;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   connectWebSocket();
   cargarRanking();
+  cargarStats();
   const openGithubIssueBtn = document.getElementById('open-github-issue');
   if (openGithubIssueBtn) {
 

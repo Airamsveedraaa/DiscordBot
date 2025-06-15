@@ -16,22 +16,27 @@
 </head>
 <body>
   <header>
-    <h1>Ranking de experiencia</h1>
     <span id="status" style="margin-left:1em; color:#aaa;"></span>
   </header>
   <div class="container mt-4 main-content-collapsed">
     <!-- Título y descripción siempre visibles -->
     <h1 class="text-center">CoCoBot V1.0</h1>
     <p class="lead text-center mb-4">
-      CoCoBot es tu asistente para servidores de Discord: administra, diviértete y potencia tu comunidad con comandos útiles y un sistema de experiencia.
+      Bienvenido al dashboard de CoCoBot, tu asistente de Discord. Aquí puedes ver el estado del bot, los comandos disponibles, el ranking de usuarios y enviar sugerencias entre otras funcionalidades y datos del bot.
     </p>
     <!-- Aquí puedes agregar estadísticas como servidores, usuarios, etc. -->
-    <div class="row justify-content-center mb-4">
-      <div class="col-auto">
-        <span class="badge bg-primary fs-6">🟢 12 servidores activos</span>
-      </div>
-      <div class="col-auto">
-        <span class="badge bg-secondary fs-6">👥 1,234 usuarios</span>
+    <div class="container mt-3">
+      <div class="badges-container">
+        <span class="custom-badge servers-badge" id="servers-badge">
+          <span class="badge-icon">🟢</span>
+          <span class="badge-number" id="servers-number">0</span>
+          <span class="badge-label">servidores activos</span>
+        </span>
+        <span class="custom-badge users-badge" id="users-badge">
+          <span class="badge-icon">👥</span>
+          <span class="badge-number" id="users-number">0</span>
+          <span class="badge-label">usuarios</span>
+        </span>
       </div>
     </div>
 
@@ -53,6 +58,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#ranking-section">Ranking</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#sugerencias-section">Sugerencias</a>
             </li>
           </ul>
         </div>
@@ -100,14 +108,21 @@
       <div id="ranking-pagination" style="text-align:center; margin-top:1em;"></div>
     </section>
 
-    <button
-      id="open-github-issue"
-      class="btn btn-primary mb-4"
-    >
-    </button>
-    <div class="alert alert-info mt-3" style="display: none;">
-      <!-- Mensaje de alerta aquí -->
-    </div>
+    <!-- Sección Sugerencias -->
+    <section id="sugerencias-section" class="mb-5">
+      <h2 class="mb-3">Sugerencias</h2>
+      <p>¿Tienes una sugerencia o mejora para el bot? ¡Clica en el botón y cuentanos sobre ello, queremos escucharte!</p>
+      <button
+        id="open-github-issue"
+        class="btn btn-primary mb-4"
+        type="button"
+      >
+        ¡Envía tu sugerencia de cambio/mejora aquí!
+      </button>
+      <div class="alert alert-info mt-3" style="display: none;">
+        <!-- Mensaje de alerta aquí -->
+      </div>
+    </section>
   </div>
 
   <!-- Bootstrap Bundle JS (Popper + Bootstrap JS) -->
