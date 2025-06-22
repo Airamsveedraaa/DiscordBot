@@ -4,6 +4,7 @@ from discord.ext import commands
 from aiohttp import web
 import asyncio
 import datetime as dt
+import yt_dlp
 from dotenv import load_dotenv
 from database import (
     init_db, get_user_exp, set_user_exp, add_experience, get_full_ranking
@@ -120,7 +121,43 @@ async def hola(ctx):
 async def adios(ctx):
     await ctx.send(f"Chao chao chao {ctx.author.mention}")
 
+#reproducir video de musica de youtube
+@bot.command()
+async def play(ctx):
+    if ctx.author.voice is None: await ctx.send(f"¡Debes estar en un canal de voz para reproducir música!")
+    return
 
+    channel= ctx.author.voice.channel
+    voice_client = await channel.connect()
+
+    #opciones para que la libreria solo coja el audio
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'quiet': True,
+        'noplaylist': True,
+        'extract_flat': False,
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        audio_url = info['url']
+
+        # Reproducir usando FFmpeg
+        source = discord.FFmpegPCMAudio(audio_url)
+        voice_client.play(source)
+
+        await ctx.send(f"🎶 Reproduciendo: {info['title']}")
+
+
+#para reproduccion de musica a voluntad
+@bot.command()
+async def Stop(ctx):
+    if ctx.voice_client:
+        await ctx.voice_client.disconnect()
+        await ctx.send(f"Me he ido porque alguien me ha parado la actividad, ¡reanudala cuando quieras volver a escuchar música!")
+        return
+
+    
 #comando !ayuda
 @bot.command()
 async def ayuda(ctx):
