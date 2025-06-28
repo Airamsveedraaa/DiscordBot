@@ -123,9 +123,10 @@ async def adios(ctx):
 
 #reproducir video de musica de youtube
 @bot.command()
-async def play(ctx):
-    if ctx.author.voice is None: await ctx.send(f"¡Debes estar en un canal de voz para reproducir música!")
-    return
+async def play(ctx,*,url):
+    if ctx.author.voice is None:
+        await ctx.send(f"¡Debes estar en un canal de voz para reproducir música!")
+        return
 
     channel= ctx.author.voice.channel
     voice_client = await channel.connect()
@@ -151,11 +152,19 @@ async def play(ctx):
 
 #para reproduccion de musica a voluntad
 @bot.command()
-async def Stop(ctx):
-    if ctx.voice_client:
-        await ctx.voice_client.disconnect()
-        await ctx.send(f"Me he ido porque alguien me ha parado la actividad, ¡reanudala cuando quieras volver a escuchar música!")
-        return
+@bot.command()
+async def stop(ctx):
+    voice_client = ctx.voice_client
+
+    if voice_client and voice_client.is_connected():
+        if voice_client.is_playing():
+            voice_client.stop()
+
+        await voice_client.disconnect()
+        await ctx.send("🔇 Me he desconectado del canal de voz.")
+    else:
+        await ctx.send("❌ No estoy conectado a ningún canal de voz.")
+
 
     
 #comando !ayuda
