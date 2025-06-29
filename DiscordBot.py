@@ -152,7 +152,6 @@ async def play(ctx,*,url):
 
 #para reproduccion de musica a voluntad
 @bot.command()
-@bot.command()
 async def stop(ctx):
     voice_client = ctx.voice_client
 
