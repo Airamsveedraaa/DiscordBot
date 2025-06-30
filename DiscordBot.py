@@ -9,27 +9,42 @@ from dotenv import load_dotenv
 from database import (
     init_db, get_user_exp, set_user_exp, get_full_ranking
 )
+import tempfile
 
 load_dotenv()
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
-# 🎧 Función para obtener audio con yt_dlp
-def get_audio_url(url: str, cookies_path="cookies.txt") -> (str, str):
+# 🎧 Función para obtener audio con yt_dlp usando cookies desde variable de entorno
+def get_audio_url(url: str) -> (str, str):
+    cookies_content = os.getenv("COOKIES_TXT_CONTENT")
+    if not cookies_content:
+        raise Exception("❌ No se encontró la variable de entorno COOKIES_TXT_CONTENT")
+
+    # Crear un archivo temporal para las cookies
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_cookies:
+        temp_cookies.write(cookies_content)
+        temp_cookies.flush()
+        temp_cookies_path = temp_cookies.name
+
     ydl_opts = {
         'format': 'bestaudio/best',
         'quiet': True,
-        'cookiefile': cookies_path,
+        'cookiefile': temp_cookies_path,
         'noplaylist': True,
         'default_search': 'ytsearch',
         'extract_flat': False
     }
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        if 'entries' in info:  # si es búsqueda
-            info = info['entries'][0]
-        return info['url'], info['title']
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            if 'entries' in info:  # si es búsqueda
+                info = info['entries'][0]
+            return info['url'], info['title']
+    finally:
+        # Borrar archivo temporal de cookies después de usarlo
+        os.unlink(temp_cookies_path)
 
 @bot.event
 async def on_ready():
@@ -128,7 +143,7 @@ async def hola(ctx):
 async def adios(ctx):
     await ctx.send(f"Chao chao chao {ctx.author.mention}")
 
-# ✅ Comando !play usando yt_dlp
+# ✅ Comando !play usando yt_dlp y cookies desde variable de entorno
 @bot.command()
 async def play(ctx, *, url):
     if ctx.author.voice is None:
