@@ -123,31 +123,42 @@ async def adios(ctx):
 
 #reproducir video de musica de youtube
 @bot.command()
-async def play(ctx,*,url):
+async def play(ctx, *, url):
     if ctx.author.voice is None:
-        await ctx.send(f"¡Debes estar en un canal de voz para reproducir música!")
+        await ctx.send("¡Debes estar en un canal de voz para reproducir música!")
         return
 
-    channel= ctx.author.voice.channel
-    voice_client = await channel.connect()
+    channel = ctx.author.voice.channel
 
-    #opciones para que la libreria solo coja el audio
+    # Conecta al canal si no está conectado
+    if ctx.voice_client is None:
+        voice_client = await channel.connect()
+    else:
+        voice_client = ctx.voice_client
+        if voice_client.channel != channel:
+            await voice_client.move_to(channel)
+
     ydl_opts = {
         'format': 'bestaudio/best',
         'quiet': True,
         'noplaylist': True,
-        'extract_flat': False,
+    }
+
+    ffmpeg_opts = {
+        'options': '-vn -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5'
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         audio_url = info['url']
+        title = info.get('title', 'Desconocido')
 
-        # Reproducir usando FFmpeg
-        source = discord.FFmpegPCMAudio(audio_url)
-        voice_client.play(source)
-
-        await ctx.send(f"🎶 Reproduciendo: {info['title']}")
+        source = discord.FFmpegPCMAudio(audio_url, **ffmpeg_opts)
+        if not voice_client.is_playing():
+            voice_client.play(source, after=lambda e: print(f"Error: {e}" if e else None))
+            await ctx.send(f"🎶 Reproduciendo: {title}")
+        else:
+            await ctx.send("❗ Ya estoy reproduciendo audio. Usa !stop primero si quieres cambiar de canción.")
 
 
 #para reproduccion de musica a voluntad
