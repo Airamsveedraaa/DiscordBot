@@ -4,19 +4,32 @@ from discord.ext import commands
 from aiohttp import web
 import asyncio
 import datetime as dt
-import play_dl
+import yt_dlp
 from dotenv import load_dotenv
 from database import (
-    init_db, get_user_exp, set_user_exp, add_experience, get_full_ranking
+    init_db, get_user_exp, set_user_exp, get_full_ranking
 )
 
 load_dotenv()
 
-current_date = dt.date.today()
-current_date.strftime("%A")
-current_date_time = dt.datetime.now()
-
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+
+# 🎧 Función para obtener audio con yt_dlp
+def get_audio_url(url: str, cookies_path="cookies.txt") -> (str, str):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'quiet': True,
+        'cookiefile': cookies_path,
+        'noplaylist': True,
+        'default_search': 'ytsearch',
+        'extract_flat': False
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        if 'entries' in info:  # si es búsqueda
+            info = info['entries'][0]
+        return info['url'], info['title']
 
 @bot.event
 async def on_ready():
@@ -39,7 +52,7 @@ async def on_message(message):
 
     if exp >= exp_needed:
         level += 1
-        exp = exp - exp_needed
+        exp -= exp_needed
         await message.channel.send(f"🎉 {message.author.mention} subió al nivel {level}")
 
     await set_user_exp(user_id, exp, level, username, avatar_url)
@@ -115,7 +128,7 @@ async def hola(ctx):
 async def adios(ctx):
     await ctx.send(f"Chao chao chao {ctx.author.mention}")
 
-# Comando actualizado con play-dl
+# ✅ Comando !play usando yt_dlp
 @bot.command()
 async def play(ctx, *, url):
     if ctx.author.voice is None:
@@ -132,13 +145,9 @@ async def play(ctx, *, url):
             await voice_client.move_to(channel)
 
     try:
-        info = await play_dl.video_info(url)
-        title = info['title']
+        audio_url, title = get_audio_url(url)
 
-        stream = await play_dl.stream(url)
-        audio_url = stream.url
-
-        source = discord.FFmpegPCMAudio(audio_url)
+        source = discord.FFmpegPCMAudio(audio_url, before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5")
         if not voice_client.is_playing():
             voice_client.play(source)
             await ctx.send(f"🎶 Reproduciendo: {title}")
@@ -164,7 +173,7 @@ async def stop(ctx):
 async def ayuda(ctx):
     await ctx.send(f"Aquí tienes la lista de comandos disponibles {ctx.author.mention}: !exp \n !hola \n !adios \n !play \n !stop")
 
-# Servidor web para Render
+# Web API para Render
 async def handle(request):
     return web.Response(text="Bot is running")
 
@@ -233,7 +242,6 @@ async def main():
     await site.start()
 
     await init_db()
-
     await bot.start(os.getenv("DISCORD_TOKEN"))
 
     while True:
