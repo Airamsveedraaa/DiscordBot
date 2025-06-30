@@ -12,8 +12,6 @@ WORKDIR /app
 # Copia los archivos del proyecto al contenedor
 COPY . .
 
-# Asegúrate de copiar el archivo de cookies también
-COPY cookies.txt .
 
 # Instala las dependencias del bot
 RUN pip install --no-cache-dir -r requirements.txt
