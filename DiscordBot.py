@@ -4,7 +4,7 @@ from discord.ext import commands
 from aiohttp import web
 import asyncio
 import datetime as dt
-import yt_dlp
+import play_dl
 from dotenv import load_dotenv
 from database import (
     init_db, get_user_exp, set_user_exp, add_experience, get_full_ranking
@@ -12,12 +12,10 @@ from database import (
 
 load_dotenv()
 
-# Declaración de día y fecha actual para posterior uso
 current_date = dt.date.today()
-current_date.strftime("%A")  # formato de salida de los días, para mostrar nombre completo 'Sabado'
-current_date_time = dt.datetime.now()  # hora del dia actual
+current_date.strftime("%A")
+current_date_time = dt.datetime.now()
 
-# Configuración del bot (usando discord.py oficial)
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
@@ -47,7 +45,6 @@ async def on_message(message):
     await set_user_exp(user_id, exp, level, username, avatar_url)
     await bot.process_commands(message)
 
-# Comando !exp
 @bot.command()
 async def exp(ctx):
     user_id = str(ctx.author.id)
@@ -58,7 +55,6 @@ async def exp(ctx):
         f"(EXP: {user_data['experience']}/{exp_needed}). ¡Sigue así!"
     )
 
-# Comando !rank
 @bot.command()
 async def rank(ctx):
     ranking = await get_full_ranking()
@@ -111,17 +107,15 @@ async def rank(ctx):
         else:
             await message.remove_reaction(reaction, user)
 
-# Comando !hola
 @bot.command()
 async def hola(ctx):
     await ctx.send(f"¡Hola, {ctx.author.mention}!")
 
-# Comando !adiós
 @bot.command()
 async def adios(ctx):
     await ctx.send(f"Chao chao chao {ctx.author.mention}")
 
-#reproducir video de musica de youtube
+# Comando actualizado con play-dl
 @bot.command()
 async def play(ctx, *, url):
     if ctx.author.voice is None:
@@ -130,7 +124,6 @@ async def play(ctx, *, url):
 
     channel = ctx.author.voice.channel
 
-    # Conecta al canal si no está conectado
     if ctx.voice_client is None:
         voice_client = await channel.connect()
     else:
@@ -138,30 +131,22 @@ async def play(ctx, *, url):
         if voice_client.channel != channel:
             await voice_client.move_to(channel)
 
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'quiet': True,
-        'noplaylist': True,
-    }
+    try:
+        info = await play_dl.video_info(url)
+        title = info['title']
 
-    ffmpeg_opts = {
-        'options': '-vn -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5'
-    }
+        stream = await play_dl.stream(url)
+        audio_url = stream.url
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        audio_url = info['url']
-        title = info.get('title', 'Desconocido')
-
-        source = discord.FFmpegPCMAudio(audio_url, **ffmpeg_opts)
+        source = discord.FFmpegPCMAudio(audio_url)
         if not voice_client.is_playing():
-            voice_client.play(source, after=lambda e: print(f"Error: {e}" if e else None))
+            voice_client.play(source)
             await ctx.send(f"🎶 Reproduciendo: {title}")
         else:
-            await ctx.send("❗ Ya estoy reproduciendo audio. Usa !stop primero si quieres cambiar de canción.")
+            await ctx.send("Ya estoy reproduciendo música. Usa `!stop` para detenerla.")
+    except Exception as e:
+        await ctx.send(f"❌ Error al intentar reproducir el audio: {e}")
 
-
-#para reproduccion de musica a voluntad
 @bot.command()
 async def stop(ctx):
     voice_client = ctx.voice_client
@@ -175,14 +160,11 @@ async def stop(ctx):
     else:
         await ctx.send("❌ No estoy conectado a ningún canal de voz.")
 
-
-    
-#comando !ayuda
 @bot.command()
 async def ayuda(ctx):
-    await ctx.send(f"Aquí tienes la lista de comandos disponibles {ctx.author.mention}: !exp \n !hola \n !adios ")
+    await ctx.send(f"Aquí tienes la lista de comandos disponibles {ctx.author.mention}: !exp \n !hola \n !adios \n !play \n !stop")
 
-# Servidor web
+# Servidor web para Render
 async def handle(request):
     return web.Response(text="Bot is running")
 
@@ -229,7 +211,6 @@ async def handle_ranking(request):
     except Exception as e:
         return web.json_response({"error": str(e)}, status=500)
 
-# Endpoint para estadísticas de servidores y usuarios únicos
 async def handle_stats(request):
     num_guilds = len(bot.guilds)
     num_users = len(set(bot.get_all_members()))
@@ -239,25 +220,22 @@ async def handle_stats(request):
     }, headers={'Access-Control-Allow-Origin': '*'})
 
 async def main():
-    # Inicia servidor web
     app = web.Application()
     app.router.add_get('/', handle)
     app.router.add_get('/status', handle_status)
     app.router.add_get('/ws', websocket_handler)
     app.router.add_get('/api/ranking', handle_ranking)
-    app.router.add_get('/api/stats', handle_stats)  # <-- Añade esta línea
+    app.router.add_get('/api/stats', handle_stats)
 
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', int(os.environ.get('PORT', 10000)))
     await site.start()
 
-    await init_db()  # Esto crea las tablas si no existen
+    await init_db()
 
-    # Inicia bot
     await bot.start(os.getenv("DISCORD_TOKEN"))
 
-    # Ciclo infinito para mantener el proceso activo (por si acaso)
     while True:
         await asyncio.sleep(3600)
 
